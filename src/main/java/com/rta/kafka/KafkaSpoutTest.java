@@ -49,20 +49,18 @@ public class KafkaSpoutTest implements IRichSpout {
         while(it.hasNext()){  
              String value =new String(it.next().message());
              SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd日 HH:mm:ss SSS");
-             Date curDate = new Date(System.currentTimeMillis());//获取当前时间       
+             Date curDate = new Date(System.currentTimeMillis());       
              String str = formatter.format(curDate);   
-             System.out.println("storm接收到来自kafka的消息------->" + value);
+             System.out.println("storm接收到来自kafka的消息--->" + value);
              collector.emit(new Values(value,1,str), value);
         }  
     }
      
     private static ConsumerConfig createConsumerConfig() {  
-        Properties props = new Properties();  
-        // 设置zookeeper的地址
+        Properties props = new Properties(); 
         props.put("zookeeper.connect","localhost:2181");
-        // 设置group id
         props.put("group.id", "1");  
-        // kafka的group 消费记录是保存在zookeeper上的, 但这个信息在zookeeper上不是实时更新的, 需要有个间隔时间更新
+        // 间隔更新zookeeper上关于kafka的group消费记录，非实时更新
         props.put("auto.commit.interval.ms", "1000");
         props.put("zookeeper.session.timeout.ms","10000");  
         return new ConsumerConfig(props);  
